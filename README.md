@@ -27,3 +27,4 @@ Hope, O. K., Hu, D., & Lu, H. (2016). The benefits of specific risk-factor discl
 Brown, S. V., & Tucker, J. W. (2011). Large‐sample evidence on firms’ year‐over‐year MD&A modifications. Journal of Accounting Research, 49(2), 309-346.
 
 Blankespoor, E. (2019). The impact of information processing costs on firm disclosure choice: Evidence from the XBRL mandate. Journal of Accounting Research, 57(4), 919-967.
+ ----- 

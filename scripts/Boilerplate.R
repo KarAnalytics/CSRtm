@@ -41,8 +41,19 @@ for(row in 1:nrow(text_stack_sample))
 
 ## Example for one sentence in one document
 t3 <- tokenize_ngrams(t2[1],n=4)
-set<-rep(0,30)
-##loop here
+
+
+set <- rep(list(0),30)
+for(i in 1:length(t))
+{
+  print(i)
+  if(t[i] != "")
+  {
+    set[i]<-tokenize_ngrams(t[i],n=4)
+  }
+}
+
+
 
 ### you need to run the tokenize_sentences for each document. Next, you need to tokenize each sentence into tetragrams.
 ### FInally, you can append all the tetragrams together into a dataframe (or list), 

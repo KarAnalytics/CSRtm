@@ -27,13 +27,13 @@ dim(text_stack_sample)
 ## Example for one document
 t2 <- unlist(tokenize_sentences(text_stack_sample[1,1]))
 
+t<-rep(0,30)
 for(row in 1:nrow(text_stack_sample))
 {
   print(row)
   if (text_stack_sample[row,1] != "")
   {
-    t=tokenize(unlist(tokenize_sentences(text_stack_sample[row,1])),format = "obj", lang="en",doc_id="sample" )
-    #text_stack_sample[row,"FOG"] =   try(as.numeric(FOG(temp)[1])) 
+    t[row]=tokenize_sentences(text_stack_sample[row,1])
   }
 }
 
@@ -41,6 +41,8 @@ for(row in 1:nrow(text_stack_sample))
 
 ## Example for one sentence in one document
 t3 <- tokenize_ngrams(t2[1],n=4)
+set<-rep(0,30)
+##loop here
 
 ### you need to run the tokenize_sentences for each document. Next, you need to tokenize each sentence into tetragrams.
 ### FInally, you can append all the tetragrams together into a dataframe (or list), 
@@ -52,17 +54,3 @@ t3 <- tokenize_ngrams(t2[1],n=4)
 ### Finally this can be used to find the boilerplate score for each document. 
 
 
-a2<-unlist(tokenize_sentences(text_stack_sample[2,1]))
-a3<-unlist(tokenize_sentences(text_stack_sample[3,1]))
-a4<-unlist(tokenize_sentences(text_stack_sample[4,1]))
-a5<-unlist(tokenize_sentences(text_stack_sample[5,1]))
-a6<-unlist(tokenize_sentences(text_stack_sample[6,1]))
-a7<-unlist(tokenize_sentences(text_stack_sample[7,1]))
-a8<-unlist(tokenize_sentences(text_stack_sample[8,1]))
-a9<-unlist(tokenize_sentences(text_stack_sample[9,1]))
-a10<-unlist(tokenize_sentences(text_stack_sample[10,1]))
-a11<-unlist(tokenize_sentences(text_stack_sample[11,1]))
-a12<-unlist(tokenize_sentences(text_stack_sample[12,1]))
-a13<-unlist(tokenize_sentences(text_stack_sample[13,1]))
-a14<-unlist(tokenize_sentences(text_stack_sample[14,1]))
-a15<-unlist(tokenize_sentences(text_stack_sample[15,1]))

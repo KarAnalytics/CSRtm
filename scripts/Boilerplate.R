@@ -27,13 +27,15 @@ dim(text_stack_sample)
 ## Example for one document
 t2 <- unlist(tokenize_sentences(text_stack_sample[1,1]))
 
-t<-rep(0,30)
+
+##############tokenize_sentences for all documents
+##t<-rep(0,30)
 for(row in 1:nrow(text_stack_sample))
 {
   print(row)
   if (text_stack_sample[row,1] != "")
   {
-    t[row]=tokenize_sentences(text_stack_sample[row,1])
+    text_stack_sample$token[row]=tokenize_sentences(text_stack_sample[row,1])
   }
 }
 
@@ -42,16 +44,19 @@ for(row in 1:nrow(text_stack_sample))
 ## Example for one sentence in one document
 t3 <- tokenize_ngrams(t2[1],n=4)
 
-
-set <- rep(list(0),30)
+################### ngrams for all documents
+##set <- rep(data.frame(0),length(t))
 for(i in 1:length(t))
 {
   print(i)
   if(t[i] != "")
   {
-    set[i]<-tokenize_ngrams(t[i],n=4)
+    text_stack_sample$ngrams[i] = tokenize_ngrams(t[[i]],n=4)
   }
 }
+
+####################labeling sentence number
+text_stack_sample$NumSenc= lapply(text_stack_sample$token,length)
 
 
 

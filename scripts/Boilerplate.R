@@ -29,13 +29,13 @@ t2 <- unlist(tokenize_sentences(text_stack_sample[1,1]))
 
 
 ##############tokenize_sentences for all documents
-##t<-rep(0,30)
+t<-rep(list(0),30)
 for(row in 1:nrow(text_stack_sample))
 {
   print(row)
   if (text_stack_sample[row,1] != "")
   {
-    text_stack_sample$token[row]=unlist(tokenize_sentences(text_stack_sample[row,1]))
+    t[row]=tokenize_sentences(text_stack_sample[row,1])
   }
 }
 
@@ -45,18 +45,21 @@ for(row in 1:nrow(text_stack_sample))
 t3 <- tokenize_ngrams(t2[1],n=4)
 
 ################### ngrams for all documents
-##set <- rep(data.frame(0),length(t))
-for(i in 1:length(text_stack_sample$token))
+ngram <- rep(0,length(t))
+for(i in 1:length(t))
 {
   print(i)
-  if(text_stack_sample$token[i] != "")
+  if(t[i] != "")
   {
-    text_stack_sample$ngrams[i] = tokenize_ngrams(text_stack_sample$token[[i]],n=4)
+    ngram[i] = tokenize_ngrams(t[[i]],n=4)
   }
 }
 
 ####################labeling sentence number
-text_stack_sample$NumSenc= lapply(text_stack_sample$token,length)
+text_stack_sample$NumSenc= lapply(t[[]],length) ###error
+
+length(t[[1]]) ###535
+
 
 
 ######frequency

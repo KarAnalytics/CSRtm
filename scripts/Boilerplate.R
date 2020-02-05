@@ -35,10 +35,12 @@ for(row in 1:nrow(text_stack_sample))
   print(row)
   if (text_stack_sample[row,1] != "")
   {
-    t[row]=tokenize_sentences(text_stack_sample[row,1])
+    t[row]=unlist(tokenize_sentences(text_stack_sample[row,1]))
   }
 }
-
+####warnings: In t[row] <- unlist(tokenize_sentences(text_stack_sample[row,  ... :
+###number of items to replace is not a multiple of replacement length
+##warnings()
 
 
 ## Example for one sentence in one document
@@ -56,7 +58,7 @@ for(i in 1:length(t))
 }
 
 ####################labeling sentence number
-text_stack_sample$NumSenc= lapply(t[[]],length) ###error
+text_stack_sample$NumSenc= lapply(t,length) ###error
 
 length(t[[1]]) ###535
 

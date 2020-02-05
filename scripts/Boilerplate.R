@@ -35,7 +35,7 @@ for(row in 1:nrow(text_stack_sample))
   print(row)
   if (text_stack_sample[row,1] != "")
   {
-    text_stack_sample$token[row]=tokenize_sentences(text_stack_sample[row,1])
+    text_stack_sample$token[row]=unlist(tokenize_sentences(text_stack_sample[row,1]))
   }
 }
 
@@ -46,18 +46,21 @@ t3 <- tokenize_ngrams(t2[1],n=4)
 
 ################### ngrams for all documents
 ##set <- rep(data.frame(0),length(t))
-for(i in 1:length(t))
+for(i in 1:length(text_stack_sample$token))
 {
   print(i)
-  if(t[i] != "")
+  if(text_stack_sample$token[i] != "")
   {
-    text_stack_sample$ngrams[i] = tokenize_ngrams(t[[i]],n=4)
+    text_stack_sample$ngrams[i] = tokenize_ngrams(text_stack_sample$token[[i]],n=4)
   }
 }
 
 ####################labeling sentence number
 text_stack_sample$NumSenc= lapply(text_stack_sample$token,length)
 
+
+######frequency
+as.data.frame(table(text_stack_sample$ngrams[1]))
 
 
 ### you need to run the tokenize_sentences for each document. Next, you need to tokenize each sentence into tetragrams.

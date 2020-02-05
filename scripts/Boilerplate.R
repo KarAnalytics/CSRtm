@@ -26,7 +26,7 @@ dim(text_stack_sample)
 
 ## Example for one document
 t2 <- unlist(tokenize_sentences(text_stack_sample[1,1]))
-
+summary(t2)
 
 ##############tokenize_sentences for all documents
 t<-rep(list(0),30)
@@ -38,6 +38,10 @@ for(row in 1:nrow(text_stack_sample))
     t[row]=unlist(tokenize_sentences(text_stack_sample[row,1]))
   }
 }
+
+t[[1]]
+install.packages(gsub)
+
 ####warnings: In t[row] <- unlist(tokenize_sentences(text_stack_sample[row,  ... :
 ###number of items to replace is not a multiple of replacement length
 ##warnings()
@@ -46,8 +50,10 @@ for(row in 1:nrow(text_stack_sample))
 ## Example for one sentence in one document
 t3 <- tokenize_ngrams(t2[1],n=4)
 
+as.factor(t3)
+
 ################### ngrams for all documents
-ngram <- rep(0,length(t))
+ngram <- list(length=length(t))
 for(i in 1:length(t))
 {
   print(i)
@@ -56,16 +62,16 @@ for(i in 1:length(t))
     ngram[i] = tokenize_ngrams(t[[i]],n=4)
   }
 }
-
+ngram[[4]][[1]]
 ####################labeling sentence number
 text_stack_sample$NumSenc= lapply(t,length) ###error
 
-length(t[[1]]) ###535
+length(t[1]) ###535
 
 
-
+install.packages()
 ######frequency
-as.data.frame(table(text_stack_sample$ngrams[1]))
+as.data.frame(table(text_stack_sample$ngrams))
 
 
 ### you need to run the tokenize_sentences for each document. Next, you need to tokenize each sentence into tetragrams.

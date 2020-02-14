@@ -4,6 +4,9 @@ library(tokenizers)
 install.koRpus.lang("en")
 library(koRpus.lang.en)
 
+install.packages("tm")
+library(tm)
+
 load("workspaces/CSR_documents_30samples.RData")
 
 
@@ -43,7 +46,7 @@ t4<-removeNumbers(text_stack_sample[4,1])
 t4<-unlist(tokenize_sentences(t4))
 summary(t4) #562
 t4 <- tokenize_ngrams(t4,n=4)
-
+t4[[1]]
 
 #5
 t5<-removeNumbers(text_stack_sample[5,1])
@@ -233,6 +236,7 @@ library(koRpus.lang.en)
 library(tidyverse)
 library(rlist)
 
+list.common(temp, )
 #### have a look of new col
 text_stack_sample_Boiler%>%
   select(SenCount,Length)
@@ -240,16 +244,34 @@ text_stack_sample_Boiler%>%
 
 
 ### get all ngram to one list
-Fngram<- unlist(text_stack_sample_Boiler$ngram)
+
+list_tetragrams = list(length(nrow(text_stack_sample_Boiler)))
+
+for(row in 1:nrow(text_stack_sample_Boiler))
+{
+  temp  = unlist(text_stack_sample_Boiler$ngram[row])
+  temp = as.data.frame(table(temp))
+  # temp %>% arrange(desc(Freq))
+  list_tetragrams[[row]] = temp$temp    
+}
+
+list_tetragrams[[1]]
+
+#Fngram<- unlist(text_stack_sample_Boiler$ngram)
+Fngram<- unlist(unlist(list_tetragrams))
+
 Fngram<- list(Fngram)
 
 N_table<-as.data.frame(table(Fngram))
 names(N_table)
 save(N_table, file = "workspaces/N_table.csv")
 
-N_table%>%
+N_table2 = N_table%>%
   arrange(desc(Freq))%>%
-  mutate(prop=Freq/sum(Freq))%>%
-  head(10)
+  mutate(prop=Freq/30) %>% filter(prop>0.3 & prop<=0.6)
+
+
+Boiler = N_table[ (N_table$prop > 0.3)  & (N_table$prop <= 0.6) ,]
 
 save(text_stack_sample_Boiler, file = "workspaces/CSR_documents_30samples_Boiler.RData")
+quantile(N_table$Freq)

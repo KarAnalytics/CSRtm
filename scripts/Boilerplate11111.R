@@ -6,11 +6,7 @@ library(koRpus.lang.en)
 
 load("workspaces/CSR_documents_30samples.RData")
 
-install.packages("stringr")
-install.packages("tm")
 
-library(stringr)
-library(tm)
 
 #take off all the numbers and special characters
 text_stack_sample[1,1]
@@ -221,24 +217,23 @@ text_stack_sample_Boiler = text_stack_sample
 
 
 
+text_stack_sample_Boiler$Length<-str_count(text_stack_sample_Boiler[,1], '\\w+')
 
 
 
 ############################################################################
-text_stack_sample_Boiler$Length<-str_count(text_stack_sample[,1], '\\w+')
 
+load("workspaces/CSR_documents_30samples_Boiler.RData")
 
+library(tidyverse)
+text_stack_sample_Boiler%>%
+  select(SenCount,Length)
 
+install.packages("rlist")
+library(rlist)
 
-
-
-
-
-
-
-
-
-
-
+### get all ngram to one list
+Fngram<- unlist(text_stack_sample_Boiler$ngram)
+Fngram<- list(Fngram)
 
 save(text_stack_sample_Boiler, file = "workspaces/CSR_documents_30samples_Boiler.RData")

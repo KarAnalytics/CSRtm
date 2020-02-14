@@ -218,5 +218,27 @@ for (a in 1:30) {
 
 text_stack_sample_Boiler = text_stack_sample
 
-save(text_stack_sample_Boiler, file = "workspaces/CSR_documents_30samples_Boiler.RData")
 
+
+
+
+
+
+############################################################################
+text_stack_sample_Boiler$Length<-str_count(text_stack_sample[,1], '\\w+')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+save(text_stack_sample_Boiler, file = "workspaces/CSR_documents_30samples_Boiler.RData")

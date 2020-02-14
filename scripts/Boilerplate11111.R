@@ -225,15 +225,31 @@ text_stack_sample_Boiler$Length<-str_count(text_stack_sample_Boiler[,1], '\\w+')
 
 load("workspaces/CSR_documents_30samples_Boiler.RData")
 
+
+library(stringr)
+library(tokenizers)
+install.koRpus.lang("en")
+library(koRpus.lang.en)
 library(tidyverse)
+library(rlist)
+
+#### have a look of new col
 text_stack_sample_Boiler%>%
   select(SenCount,Length)
 
-install.packages("rlist")
-library(rlist)
+
 
 ### get all ngram to one list
 Fngram<- unlist(text_stack_sample_Boiler$ngram)
 Fngram<- list(Fngram)
+
+N_table<-as.data.frame(table(Fngram))
+names(N_table)
+save(N_table, file = "workspaces/N_table.csv")
+
+N_table%>%
+  arrange(desc(Freq))%>%
+  mutate(prop=Freq/sum(Freq))%>%
+  head(10)
 
 save(text_stack_sample_Boiler, file = "workspaces/CSR_documents_30samples_Boiler.RData")

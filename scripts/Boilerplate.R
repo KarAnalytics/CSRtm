@@ -10,13 +10,19 @@
 # per document in the list (phrases commonly used in financial disclosures). Discard other tetragrams from the list.  
 # BOILERPLATE = % of total words in document that are in sentences containing boilerplate tetragrams. 
 
+
+######### loading all the packages that are going to be used
+install.koRpus.lang("en")
+library(koRpus.lang.en)
+
 library(stringr)
 library(tokenizers)
 
-install.koRpus.lang("en")
-# load the package
-library(koRpus.lang.en)
+library(tidyverse)
+library(tm)
 
+
+########load original data sample
 load("workspaces/CSR_documents_30samples.RData")
 
 dim(text_stack_sample)
@@ -24,33 +30,26 @@ dim(text_stack_sample)
 ## Tokenize each tetragram in the document. Be mindful of the period in each sentence. 
 ### Remove numbers from strings before tokenizing
 
-## Example for one document
-t2 <- unlist(tokenize_sentences(text_stack_sample[1,1]))
-summary(t2)
 
-##############tokenize_sentences for all documents
+##############tokenize_sentences for all documents, we removed the numbers here as well
 t<-list(length=30)
 for(row in 1:nrow(text_stack_sample))
 {
   print(row)
   if (text_stack_sample[row,1] != "")
   {
-    t[[row]] =unlist(tokenize_sentences(text_stack_sample[row,1]))
+    t[[row]] =unlist(tokenize_sentences(removeNumbers(text_stack_sample[row,1])))
   }
 }
 
 t[[1]]
-install.packages(gsub)
+
 
 ####warnings: In t[row] <- unlist(tokenize_sentences(text_stack_sample[row,  ... :
 ###number of items to replace is not a multiple of replacement length
 ##warnings()
 
 
-## Example for one sentence in one document
-t3 <- tokenize_ngrams(t2[1],n=4)
-
-as.factor(t3)
 
 ################### ngrams for all documents
 ngram <- list(length=length(t))
@@ -68,17 +67,54 @@ for(i in 1:length(t))
 }
 
 ngram[[4]][[1]]
+
+
+
+
+
 ####################labeling sentence number
-text_stack_sample$NumSenc= lapply(t,length) ###error
-
-length(t[1]) ###535
-
-
-install.packages()
-######frequency
-as.data.frame(table(text_stack_sample$ngrams))
+for (a in 1:30) {
+  text_stack_sample$SenCount[a] <- length(ngram[[a]])
+}
 
 
+######### Add length
+text_stack_sample$Length<-str_count(text_stack_sample[,1], '\\w+')
+
+
+#### have a look of new col
+text_stack_sample%>%
+  select(SenCount,Length)
+
+
+### get all ngram to one list
+
+list_tetragrams = list(length(nrow(text_stack_sample)))
+
+for(row in 1:nrow(text_stack_sample))
+{
+  temp  = unlist(ngram[row])
+  temp = as.data.frame(table(temp))
+  # temp %>% arrange(desc(Freq))
+  list_tetragrams[[row]] = temp$temp    
+}
+
+list_tetragrams[[1]]
+
+#Fngram<- unlist(text_stack_sample_Boiler$ngram)
+Fngram<- unlist(unlist(list_tetragrams))
+
+Fngram<- list(Fngram)
+
+N_table<-as.data.frame(table(Fngram))
+names(N_table)
+save(N_table, file = "workspaces/N_table.csv")
+
+N_table2 = N_table%>%
+  arrange(desc(Freq))%>%
+  mutate(prop=Freq/30) %>% filter(prop>0.3 & prop<=0.75)
+
+save(N_table2, file = "workspaces/N_table2.csv")
 ### you need to run the tokenize_sentences for each document. Next, you need to tokenize each sentence into tetragrams.
 ### FInally, you can append all the tetragrams together into a dataframe (or list), 
 ## labeling their sentence number in a separate column or as a key value pair.

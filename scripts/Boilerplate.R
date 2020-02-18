@@ -83,7 +83,7 @@ text_stack_sample$Length<-str_count(text_stack_sample[,1], '\\w+')
 
 
 #### have a look of new col
-text_stack_sample%>%
+view<-text_stack_sample%>%
   select(SenCount,Length)
 
 
@@ -119,6 +119,15 @@ N_table2
 save(N_table2, file = "workspaces/N_table2.csv")
 
 ########### calculate the boilerplate score
+N_table2
+
+view$Length
+
+sum(unlist(str_count(grep(N_table2[7,1],t[[1]],value = TRUE))))/view$Length[1]
+
+###myfunction<- function(x,y){grep(N_table2[x,1],t[[y]],value = TRUE)}
+
+###count[i]<- list.append(unlist(str_count(grep(N_table2[j,1],t[[i]],value = TRUE))))
 
 
 ### you need to run the tokenize_sentences for each document. Next, you need to tokenize each sentence into tetragrams.

@@ -114,7 +114,13 @@ N_table2 = N_table%>%
   arrange(desc(Freq))%>%
   mutate(prop=Freq/30) %>% filter(prop>0.3 & prop<=0.75)
 
+N_table2
+
 save(N_table2, file = "workspaces/N_table2.csv")
+
+########### calculate the boilerplate score
+
+
 ### you need to run the tokenize_sentences for each document. Next, you need to tokenize each sentence into tetragrams.
 ### FInally, you can append all the tetragrams together into a dataframe (or list), 
 ## labeling their sentence number in a separate column or as a key value pair.

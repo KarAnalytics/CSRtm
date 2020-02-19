@@ -20,6 +20,7 @@ library(tokenizers)
 
 library(tidyverse)
 library(tm)
+library(rlist)
 
 
 ########load original data sample
@@ -123,11 +124,18 @@ N_table2
 
 view$Length
 
-sum(unlist(str_count(grep(N_table2[7,1],t[[1]],value = TRUE))))/view$Length[1]
+sum(unlist(str_count(grep(N_table2[4,1],t[[1]],value = TRUE))))/view$Length[1]
 
-###myfunction<- function(x,y){grep(N_table2[x,1],t[[y]],value = TRUE)}
-
-###count[i]<- list.append(unlist(str_count(grep(N_table2[j,1],t[[i]],value = TRUE))))
+S<-list(list(nrow(N_table2)))
+for(row in 1:nrow(N_table2))
+{
+  print(row)
+  if(N_table2[row,1] != "")
+  {
+    S[[row]]<-str_count(grep(N_table2[row,1],t[[1]],value = TRUE))
+  }
+}
+sum(unlist(unlist(S)))/view$Length[1]
 
 
 ### you need to run the tokenize_sentences for each document. Next, you need to tokenize each sentence into tetragrams.

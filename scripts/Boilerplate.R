@@ -139,14 +139,15 @@ for(i in 1:length(t))
   }
 }
 
+##
+str_count(t[[1]][226],as.character(N_table2$Fngram[4]))
 
+A <- rep(list(0), length.out = text_stack_sample$SenCount[[1]])
+for (i in 1:text_stack_sample$SenCount[[1]]) {
+  A[[i]]<-str_count(t[[1]][i],as.character(N_table2$Fngram[4]))
+}
 
-str_count(grep(N_table2$Fngram[4],t[[1]],value = TRUE))
-
-str_count(t[[1]], N_table2$Fngram[4])
-
-##unlist(str_count(grep(N_table2$Fngram[j],t[[i]],value = TRUE)), '\\w+')
-
+sum(unlist(unlist(A)))
 
 ### you need to run the tokenize_sentences for each document. Next, you need to tokenize each sentence into tetragrams.
 ### FInally, you can append all the tetragrams together into a dataframe (or list), 

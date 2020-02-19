@@ -33,7 +33,7 @@ dim(text_stack_sample)
 
 
 ##############tokenize_sentences for all documents, we removed the numbers here as well
-t<-list(length=30)
+t<-list(length=nrow(text_stack_sample))
 for(row in 1:nrow(text_stack_sample))
 {
   print(row)
@@ -109,7 +109,7 @@ Fngram<- list(Fngram)
 
 N_table<-as.data.frame(table(Fngram))
 names(N_table)
-save(N_table, file = "workspaces/N_table.csv")
+#save(N_table, file = "workspaces/N_table.csv")
 
 N_table2 = N_table%>%
   arrange(desc(Freq))%>%
@@ -117,25 +117,35 @@ N_table2 = N_table%>%
 
 N_table2
 
-save(N_table2, file = "workspaces/N_table2.csv")
+#save(N_table2, file = "workspaces/N_table2.csv")
 
-########### calculate the boilerplate score
+######################## calculate the boilerplate score
 N_table2
 
 view$Length
 
-sum(unlist(str_count(grep(N_table2[4,1],t[[1]],value = TRUE))))/view$Length[1]
 
-S<-list(list(nrow(N_table2)))
-for(row in 1:nrow(N_table2))
+##############################################
+S<-rep(list(0),length(t))
+for(i in 1:length(t))
 {
-  print(row)
-  if(N_table2[row,1] != "")
-  {
-    S[[row]]<-str_count(grep(N_table2[row,1],t[[1]],value = TRUE))
+  print(i)
+  S[[i]] = list(length = length(N_table2$Fngram))
+  for (j in 1:length(N_table2$Fngram)) {
+    if(N_table2$Fngram[j] != "")
+    {
+      S[[i]][[j]]<-sum(unlist(str_count(grep(N_table2$Fngram[j],t[[i]],value = TRUE))))
+    }
   }
 }
-sum(unlist(unlist(S)))/view$Length[1]
+
+
+
+str_count(grep(N_table2$Fngram[4],t[[1]],value = TRUE))
+
+str_count(t[[1]], N_table2$Fngram[4])
+
+##unlist(str_count(grep(N_table2$Fngram[j],t[[i]],value = TRUE)), '\\w+')
 
 
 ### you need to run the tokenize_sentences for each document. Next, you need to tokenize each sentence into tetragrams.

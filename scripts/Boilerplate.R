@@ -149,6 +149,7 @@ for (i in 1:text_stack_sample$SenCount[[1]]) {
 
 sum(unlist(unlist(A)))
 
+
 ### you need to run the tokenize_sentences for each document. Next, you need to tokenize each sentence into tetragrams.
 ### FInally, you can append all the tetragrams together into a dataframe (or list), 
 ## labeling their sentence number in a separate column or as a key value pair.

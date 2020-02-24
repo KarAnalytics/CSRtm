@@ -74,6 +74,7 @@ ngram[[4]][[1]]
 
 
 ####################labeling sentence number
+
 for (a in 1:30) {
   text_stack_sample$SenCount[a] <- length(ngram[[a]])
 }
@@ -100,6 +101,7 @@ for(row in 1:nrow(text_stack_sample))
   list_tetragrams[[row]] = temp$temp    
 }
 
+
 list_tetragrams[[1]]
 
 #Fngram<- unlist(text_stack_sample_Boiler$ngram)
@@ -122,34 +124,92 @@ N_table2
 ######################## calculate the boilerplate score
 N_table2
 
+
 view$Length
 
 
-##############################################
-S<-rep(list(0),length(t))
+
+
+###############################################  NWoS stands for Number of Words of each Sentence
+
+for (i in 1:nrow(text_stack_sample)){
+  text_stack_sample$NWoS[[i]]<-rep(list(0),length.out = text_stack_sample$SenCount[[i]])
+  text_stack_sample$NWoS[[i]] <- str_count(t[i][[1]])
+}
+
+text_stack_sample$NWoS[[1]]
+############################################## NNoS stands for Number of Ngrams of each Sentence
+
 for(i in 1:length(t))
 {
   print(i)
-  S[[i]] = list(length = length(N_table2$Fngram))
-  for (j in 1:length(N_table2$Fngram)) {
+  text_stack_sample$NNoS[[i]]<-rep(list(0),length.out = text_stack_sample$SenCount[[i]])
+  for (j in 1:text_stack_sample$SenCount[[i]]) {
     if(N_table2$Fngram[j] != "")
     {
-      S[[i]][[j]]<-sum(unlist(str_count(grep(N_table2$Fngram[j],t[[i]],value = TRUE))))
+      ##text_stack_sample$NNoS[[4]][i]<-length(grep(unlist(N_table2[,1]),ngram[[1]][i]))
     }
   }
 }
 
-##
-str_count(t[[1]][226],as.character(N_table2$Fngram[4]))
+##### FOr document level:
 
-A <- rep(list(0), length.out = text_stack_sample$SenCount[[1]])
-for (i in 1:text_stack_sample$SenCount[[1]]) {
-  A[[i]]<-str_count(t[[1]][i],as.character(N_table2$Fngram[4]))
+###############
+
+for (i in 1:length(t))
+  {
+  print(i)
+    temp = 0
+    for (j in 1:nrow(N_table2))
+      {
+      ngrams = na.omit(unlist(ngram[[i]]))
+      
+      if(any(str_detect(ngrams,as.character(N_table2[j,"Fngram"]))))
+      {
+        temp = temp + 1 
+      }
+    }
+    text_stack_sample$DocFlag[i] = temp   
+  }
+
+
+
+#text_stack_sample$DocFlag
+
+
+
+
+###############
+sen_list<- list()
+
+for (i in 1:length(t)){
+  print(i)
+  sent_tetragram_count_list = list()
+  for(sent in 1:length(t[[i]]))
+  {
+    temp = 0
+    for (j in 1:nrow(N_table2)){
+      
+      ngrams = na.omit(ngram[[i]][[sent]])
+      
+      if(!is.na(any(str_detect(ngrams,as.character(N_table2[j,"Fngram"])))))
+      {
+        temp = temp + 1 
+      }
+       
+    }
+    sent_tetragram_count_list[[sent]] = temp
+  }
+  #text_stack_sample$SentDocFlag[i] = sent_tetragram_count_list
+  sen_list[[i]] = sent_tetragram_count_list
+  
 }
 
-sum(unlist(unlist(A)))
+#text_stack_sample$DocFlag
 
+length(intersect(ngram[[1]][5], N_table2[,1]))
 
+names(ngram)
 ### you need to run the tokenize_sentences for each document. Next, you need to tokenize each sentence into tetragrams.
 ### FInally, you can append all the tetragrams together into a dataframe (or list), 
 ## labeling their sentence number in a separate column or as a key value pair.

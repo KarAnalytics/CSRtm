@@ -200,16 +200,19 @@ for (i in 1:length(t)){
     }
     sent_tetragram_count_list[[sent]] = temp
   }
-  #text_stack_sample$SentDocFlag[i] = sent_tetragram_count_list
+  
   sen_list[[i]] = sent_tetragram_count_list
   
 }
 
+
+#text_stack_sample$SentDocFlag[i] = sent_tetragram_count_list
 #text_stack_sample$DocFlag
 
 length(intersect(ngram[[1]][5], N_table2[,1]))
+head(text_stack_sample,1)
+names(text_stack_sample)
 
-names(ngram)
 ### you need to run the tokenize_sentences for each document. Next, you need to tokenize each sentence into tetragrams.
 ### FInally, you can append all the tetragrams together into a dataframe (or list), 
 ## labeling their sentence number in a separate column or as a key value pair.

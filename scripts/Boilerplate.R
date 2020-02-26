@@ -46,12 +46,6 @@ for(row in 1:nrow(text_stack_sample))
 t[[1]]
 
 
-####warnings: In t[row] <- unlist(tokenize_sentences(text_stack_sample[row,  ... :
-###number of items to replace is not a multiple of replacement length
-##warnings()
-
-
-
 ################### ngrams for all documents
 ngram <- list(length=length(t))
 for(i in 1:length(t))
@@ -69,27 +63,22 @@ for(i in 1:length(t))
 
 ngram[[4]][[1]]
 
-
-
-
-
 ####################labeling sentence number
 
 for (a in 1:30) {
   text_stack_sample$SenCount[a] <- length(ngram[[a]])
 }
 
-
-######### Add length
+################################### Add length
 text_stack_sample$Length<-str_count(text_stack_sample[,1], '\\w+')
 
 
-#### have a look of new col
+####################### have a look of new col
 view<-text_stack_sample%>%
   select(SenCount,Length)
 
 
-### get all ngram to one list
+#################### get all ngram to one list
 
 list_tetragrams = list(length(nrow(text_stack_sample)))
 
@@ -97,21 +86,20 @@ for(row in 1:nrow(text_stack_sample))
 {
   temp  = unlist(ngram[row])
   temp = as.data.frame(table(temp))
-  # temp %>% arrange(desc(Freq))
   list_tetragrams[[row]] = temp$temp    
 }
 
 
 list_tetragrams[[1]]
 
-#Fngram<- unlist(text_stack_sample_Boiler$ngram)
+
 Fngram<- unlist(unlist(list_tetragrams))
 
 Fngram<- list(Fngram)
 
 N_table<-as.data.frame(table(Fngram))
 names(N_table)
-#save(N_table, file = "workspaces/N_table.csv")
+
 
 N_table2 = N_table%>%
   arrange(desc(Freq))%>%
@@ -119,67 +107,23 @@ N_table2 = N_table%>%
 
 N_table2
 
-#save(N_table2, file = "workspaces/N_table2.csv")
 
 ######################## calculate the boilerplate score
 N_table2
 
-
 view$Length
-
-
-
 
 ###############################################  NWoS stands for Number of Words of each Sentence
 
 for (i in 1:nrow(text_stack_sample)){
   text_stack_sample$NWoS[[i]]<-rep(list(0),length.out = text_stack_sample$SenCount[[i]])
-  text_stack_sample$NWoS[[i]] <- str_count(t[i][[1]])
+  text_stack_sample$NWoS[[i]] <- lapply(t[[i]],function(x) str_count(x,'\\w+'))
 }
 
-text_stack_sample$NWoS[[1]]
-############################################## NNoS stands for Number of Ngrams of each Sentence
+text_stack_sample$NWoS[[1]][2]
 
-for(i in 1:length(t))
-{
-  print(i)
-  text_stack_sample$NNoS[[i]]<-rep(list(0),length.out = text_stack_sample$SenCount[[i]])
-  for (j in 1:text_stack_sample$SenCount[[i]]) {
-    if(N_table2$Fngram[j] != "")
-    {
-      ##text_stack_sample$NNoS[[4]][i]<-length(grep(unlist(N_table2[,1]),ngram[[1]][i]))
-    }
-  }
-}
+############################################## Num of tetragram in each sentence
 
-##### FOr document level:
-
-###############
-
-for (i in 1:length(t))
-  {
-  print(i)
-    temp = 0
-    for (j in 1:nrow(N_table2))
-      {
-      ngrams = na.omit(unlist(ngram[[i]]))
-      
-      if(any(str_detect(ngrams,as.character(N_table2[j,"Fngram"]))))
-      {
-        temp = temp + 1 
-      }
-    }
-    text_stack_sample$DocFlag[i] = temp   
-  }
-
-
-
-#text_stack_sample$DocFlag
-
-
-
-
-###############
 sen_list<- list()
 
 for (i in 1:length(t)){
@@ -192,11 +136,11 @@ for (i in 1:length(t)){
       
       ngrams = na.omit(ngram[[i]][[sent]])
       
-      if(!is.na(any(str_detect(ngrams,as.character(N_table2[j,"Fngram"])))))
+      if(isTRUE(any(unlist(map(ngrams,str_detect,as.character(N_table2[j,1]))))))
       {
         temp = temp + 1 
       }
-       
+      
     }
     sent_tetragram_count_list[[sent]] = temp
   }
@@ -205,13 +149,21 @@ for (i in 1:length(t)){
   
 }
 
+################################ Calculate the Boilerplate score
 
-#text_stack_sample$SentDocFlag[i] = sent_tetragram_count_list
-#text_stack_sample$DocFlag
+for (i in 1:nrow(text_stack_sample)){
+  temp = 0
+  for (sent in 1:length(text_stack_sample$NWoS[[i]])){
+    if (sen_list[[i]][[sent]] != 0){
+      temp = temp+text_stack_sample$NWoS[[i]][[sent]]
+    }
+  }
+  text_stack_sample$BoilerPlate[i] = temp / text_stack_sample$Length[i] 
+}
 
-length(intersect(ngram[[1]][5], N_table2[,1]))
-head(text_stack_sample,1)
-names(text_stack_sample)
+text_stack_sample$BoilerPlate
+
+save(text_stack_sample, file = "workspaces/Boilerplate.RData")
 
 ### you need to run the tokenize_sentences for each document. Next, you need to tokenize each sentence into tetragrams.
 ### FInally, you can append all the tetragrams together into a dataframe (or list), 

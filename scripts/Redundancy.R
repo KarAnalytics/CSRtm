@@ -1,4 +1,4 @@
-##################### Redundancy
+##################### 2. Redundancy
 ####### % of 10-grams that occur more than once in each document 
 load("workspaces/CSR_documents_30samples.RData")
 
@@ -51,6 +51,7 @@ for (i in 1:length(TenGram)){
 }
 
 
+mean(text_stack_sample$Redundancy)
 
 save(text_stack_sample, file = "workspaces/Redundancy.RData")
 

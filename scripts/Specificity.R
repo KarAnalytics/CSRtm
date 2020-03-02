@@ -13,13 +13,19 @@ library(tokenizers)
 library(tidyverse)
 library(tm)
 
+## NLP package
 library(rJava)
 library(XML)
 
 library(coreNLP)
+library(openNLP)
 
 downloadCoreNLP(type = "english")
 
 initCoreNLP()
-
+require("NLP")
 ##################################
+install.packages("cleanNLP")
+library(cleanNLP)
+
+

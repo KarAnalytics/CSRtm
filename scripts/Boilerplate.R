@@ -12,7 +12,7 @@
 
 
 ######### loading all the packages that are going to be used
-install.koRpus.lang("en")
+#install.koRpus.lang("en")
 library(koRpus.lang.en)
 
 library(stringr)
@@ -26,7 +26,6 @@ library(rlist)
 ########load original data sample
 load("workspaces/CSR_documents_30samples.RData")
 
-dim(text_stack_sample)
 
 ## Tokenize each tetragram in the document. Be mindful of the period in each sentence. 
 ### Remove numbers from strings before tokenizing
@@ -43,7 +42,6 @@ for(row in 1:nrow(text_stack_sample))
   }
 }
 
-t[[1]]
 
 
 ################### ngrams for all documents
@@ -61,11 +59,10 @@ for(i in 1:length(t))
   }
 }
 
-ngram[[4]][[1]]
 
 ####################labeling sentence number
 
-for (a in 1:30) {
+for (a in 1:nrow(text_stack_sample)) {
   text_stack_sample$SenCount[a] <- length(ngram[[a]])
 }
 
@@ -74,8 +71,7 @@ text_stack_sample$Length<-str_count(text_stack_sample[,1], '\\w+')
 
 
 ####################### have a look of new col
-view<-text_stack_sample%>%
-  select(SenCount,Length)
+#view<-text_stack_sample%>%select(SenCount,Length)
 
 
 #################### get all ngram to one list
@@ -90,7 +86,7 @@ for(row in 1:nrow(text_stack_sample))
 }
 
 
-list_tetragrams[[1]]
+#list_tetragrams[[1]]
 
 
 Fngram<- unlist(unlist(list_tetragrams))
@@ -98,20 +94,18 @@ Fngram<- unlist(unlist(list_tetragrams))
 Fngram<- list(Fngram)
 
 N_table<-as.data.frame(table(Fngram))
-names(N_table)
+#names(N_table)
 
 
 N_table2 = N_table%>%
   arrange(desc(Freq))%>%
-  mutate(prop=Freq/30) %>% filter(prop>0.3 & prop<=0.75)
+  mutate(prop=Freq/nrow(text_stack_sample)) %>% filter(prop>0.3 & prop<=0.75)
 
-N_table2
+#N_table2
 
 
 ######################## calculate the boilerplate score
-N_table2
 
-view$Length
 
 ###############################################  NWoS stands for Number of Words of each Sentence
 
@@ -120,7 +114,7 @@ for (i in 1:nrow(text_stack_sample)){
   text_stack_sample$NWoS[[i]] <- lapply(t[[i]],function(x) str_count(x,'\\w+'))
 }
 
-text_stack_sample$NWoS[[1]][2]
+#text_stack_sample$NWoS[[1]][2]
 
 ############################################## Num of tetragram in each sentence
 

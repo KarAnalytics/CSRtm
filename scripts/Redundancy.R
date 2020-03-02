@@ -50,8 +50,9 @@ for (i in 1:length(TenGram)){
   text_stack_sample$Redundancy[i]<-sum(TenGram[i][[1]]$Freq>=2)/sum(TenGram[i][[1]]$Freq)
 }
 
-
-mean(text_stack_sample$Redundancy)
+#TenGram[1]
+#mean(text_stack_sample$Redundancy)
+text_stack_sample$Redundancy
 
 save(text_stack_sample, file = "workspaces/Redundancy.RData")
 

@@ -62,9 +62,8 @@ for(i in 1:length(t))
 
 ####################labeling sentence number
 
-for (a in 1:nrow(text_stack_sample)) {
-  text_stack_sample$SenCount[a] <- length(ngram[[a]])
-}
+#for (a in 1:nrow(text_stack_sample)) {
+ # text_stack_sample$SenCount[a] <- length(ngram[[a]])}
 
 ################################### Add length
 text_stack_sample$Length<-str_count(text_stack_sample[,1], '\\w+')
@@ -89,9 +88,7 @@ for(row in 1:nrow(text_stack_sample))
 #list_tetragrams[[1]]
 
 
-Fngram<- unlist(unlist(list_tetragrams))
-
-Fngram<- list(Fngram)
+Fngram<- list(unlist(unlist(list_tetragrams)))
 
 N_table<-as.data.frame(table(Fngram))
 #names(N_table)
@@ -110,11 +107,9 @@ N_table2 = N_table%>%
 ###############################################  NWoS stands for Number of Words of each Sentence
 
 for (i in 1:nrow(text_stack_sample)){
-  text_stack_sample$NWoS[[i]]<-rep(list(0),length.out = text_stack_sample$SenCount[[i]])
   text_stack_sample$NWoS[[i]] <- lapply(t[[i]],function(x) str_count(x,'\\w+'))
 }
 
-#text_stack_sample$NWoS[[1]][2]
 
 ############################################## Num of tetragram in each sentence
 

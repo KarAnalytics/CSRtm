@@ -1,5 +1,5 @@
-##################### 2. Redundancy
-####### % of 10-grams that occur more than once in each document 
+##################### 4. Redundancy
+####### % of 10-grams that occur more than once in each document
 load("workspaces/CSR_documents_30samples.RData")
 
 ################## load all the packages
@@ -31,10 +31,12 @@ for(i in 1:length(t))
   ngram[[i]] = list(length = length(t[[i]]))
   for(j in 1:length(t[[i]]))
   {
+    try(
     if(t[[i]][[j]] != "")
     {
       ngram[[i]][[j]] = tokenize_ngrams(t[[i]][[j]],n=10)
     }
+    )
   }
 }
 
@@ -54,29 +56,6 @@ for (i in 1:length(TenGram)){
 #mean(text_stack_sample$Redundancy)
 text_stack_sample$Redundancy
 
-save(text_stack_sample, file = "workspaces/Redundancy.RData")
+save.image("workspaces/RelPreval_redundancy_1431.RData")
 
-
-
-##### For document level:
-###############
-
-#for (i in 1:length(t))
-#{
-#  print(i)
-#  temp = 0
-#  for (j in 1:nrow(N_table))
-#  {
-#    ngrams = na.omit(unlist(ngram[[i]]))
-#    
-#    if(any(str_detect(ngrams,as.character(N_table[j,"Fngram"]))))
-#    {
-#      temp = temp + 1 
-#    }
-#  }
-#  text_stack_sample$DocFlag[i] = temp   
-#}
-
-
-
-#text_stack_sample$DocFlag
+write.csv(text_stack_sample[,c("file","Redundancy","RelaPre")],"scripts/RelaPre_Redun_file.csv")

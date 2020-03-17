@@ -6,8 +6,9 @@
 
 ################################## load packages 
 library(stringr)
-#library(reticulate)
+library(reticulate)
 #use_python("C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Python 3.8")
+use_python("/usr/bin/python")
 #install.packages("spacyr")
 library(spacyr)
 
@@ -19,7 +20,7 @@ spacy_initialize(model = 'en_core_web_sm')
 
 ##### load files
 load("workspaces/CSR_documents_30samples.RData")
-
+load("workspaces/CSR_documents_file.RData")
 
 #### parse the first document
 document <- spacy_parse(text_stack_sample[1,1])
@@ -69,3 +70,6 @@ text_stack_sample$Specificity <- unlist(text_stack_sample$EntityCount) / text_st
 
 #save(text_stack_sample, file = "workspaces/Specificity.RData")
 
+save.image("workspaces/Specificity_1431.RData")
+
+write.csv(text_stack_sample[,c("file","Length", "Specificity")],"scripts/Specificity_file.csv",row.names=F)

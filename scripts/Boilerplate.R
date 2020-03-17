@@ -25,7 +25,9 @@ library(rlist)
 
 ########load original data sample
 load("workspaces/CSR_documents_30samples.RData")
+load("workspaces/CSR_documents_file.RData")
 
+text_stack_sample = text_stack
 
 ## Tokenize each tetragram in the document. Be mindful of the period in each sentence. 
 ### Remove numbers from strings before tokenizing
@@ -47,15 +49,18 @@ for(row in 1:nrow(text_stack_sample))
 ################### ngrams for all documents
 ngram <- list(length=length(t))
 for(i in 1:length(t))
+#for(i in 457:length(t))
 {
   print(i)
   ngram[[i]] = list(length = length(t[[i]]))
   for(j in 1:length(t[[i]]))
   {
+    try(
     if(t[[i]][[j]] != "")
     {
       ngram[[i]][[j]] = tokenize_ngrams(t[[i]][[j]],n=4)
     }
+    )
   }
 }
 
@@ -93,7 +98,6 @@ Fngram<- list(unlist(unlist(list_tetragrams)))
 N_table<-as.data.frame(table(Fngram))
 #names(N_table)
 
-
 N_table2 = N_table%>%
   arrange(desc(Freq))%>%
   mutate(prop=Freq/nrow(text_stack_sample)) %>% filter(prop>0.3 & prop<=0.75)
@@ -115,7 +119,12 @@ for (i in 1:nrow(text_stack_sample)){
 
 sen_list<- list()
 
-for (i in 1:length(t)){
+### Just temporary
+## sen_list[[458]] = sen_list[[457]]
+
+system.time(
+# for (i in 1:length(t)){
+for (i in 459:length(t)){
   print(i)
   sent_tetragram_count_list = list()
   for(sent in 1:length(t[[i]]))
@@ -137,10 +146,12 @@ for (i in 1:length(t)){
   sen_list[[i]] = sent_tetragram_count_list
   
 }
-
+)
 ################################ Calculate the Boilerplate score
 
-for (i in 1:nrow(text_stack_sample)){
+
+#for (i in 1:nrow(text_stack_sample)){
+for (i in 459:nrow(text_stack_sample)){
   temp = 0
   for (sent in 1:length(text_stack_sample$NWoS[[i]])){
     if (sen_list[[i]][[sent]] != 0){
@@ -151,6 +162,11 @@ for (i in 1:nrow(text_stack_sample)){
 }
 
 text_stack_sample$BoilerPlate
+
+#save.image("workspaces/Boilerplate_1431.RData")
+save.image("workspaces/Boilerplate_1431_after458.RData")
+
+write.csv(text_stack_sample[,c("file","BoilerPlate")],"scripts/Boilerplate_file.csv")
 
 save(text_stack_sample, file = "workspaces/Boilerplate.RData")
 
@@ -163,4 +179,4 @@ save(text_stack_sample, file = "workspaces/Boilerplate.RData")
 ### we can find out the number of words in that sentence to find the number of words in that sentence. 
 ### Finally this can be used to find the boilerplate score for each document. 
 
-
+t = load("workspaces/Specificity_Jinhang.RData")

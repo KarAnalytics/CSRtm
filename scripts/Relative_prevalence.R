@@ -4,13 +4,20 @@
 ######  (Count of numbers in document i)/(Total number of words in document i)
 
 ## load package
+library(RColorBrewer)
+Sys.setenv("JAVA_HOME" = '/usr/bin/java') 
+library(rJava)
+library(openNLP)
 library(qdap)
 library(stringr)
 
 
+
 ###### load data
 load("workspaces/CSR_documents_30samples.RData")
+load("workspaces/CSR_documents_file.RData")
 
+text_stack_sample = text_stack
 
 ##### count all the numbers
 
@@ -34,5 +41,7 @@ text_stack_sample$Length<-str_count(text_stack_sample[,1], '\\w+')
 ## calculate the relative prevalence
 text_stack_sample$RelaPre <- text_stack_sample$countNum / text_stack_sample$Length
 text_stack_sample$RelaPre
+
+save.image("workspaces/RelPrevelance_1431.RData")
 
 #save(text_stack_sample, file = "workspaces/Relative_prevalece.RData")

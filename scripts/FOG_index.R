@@ -1,6 +1,7 @@
 ## 1. Compute length of document (in terms of number of words)
 ## 2. Compute the Fog-index based on (Loughran and McDonald, 2014) 
 
+
 library(stringr)
 library(koRpus)
 
@@ -9,6 +10,9 @@ install.koRpus.lang("en")
 library(koRpus.lang.en)
 
 load("workspaces/CSR_documents_30samples.RData")
+load("workspaces/CSR_documents_file.RData")
+
+text_stack_sample = text_stack
 
 dim(text_stack_sample)
 
@@ -31,4 +35,7 @@ system.time(
 
 text_stack_sample_FOG = text_stack_sample
 
-save(text_stack_sample_FOG, file = "workspaces/CSR_documents_30samples_FOG.RData")
+write.csv(text_stack_sample_FOG[,2:ncol(text_stack_sample_FOG)],"scripts/fog_file.csv")
+
+#save(text_stack_sample_FOG, file = "workspaces/CSR_documents_30samples_FOG.RData")
+save.image("workspaces/Fog_index_1431.RData")

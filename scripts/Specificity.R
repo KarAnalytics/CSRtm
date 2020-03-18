@@ -51,7 +51,9 @@ for (i in 1:nrow(text_stack_sample)){
 document_entity<- NULL
 for (i in 1:length(document)){
   print(i)
+  try(
     document_entity[[i]]<- entity_extract(document[[i]], type = "all")
+  )
 }
 
 ################################### Add length
@@ -60,12 +62,15 @@ text_stack_sample$Length<-str_count(text_stack_sample[,1], '\\w+')
 
 ################################## Add Entity Counts
 text_stack_sample$EntityCount <- lapply(document_entity, nrow)
+text_stack_sample$EntityCount[458]<-0
 
 
 #################################  calculate the specificity
 text_stack_sample$Specificity <- unlist(text_stack_sample$EntityCount) / text_stack_sample$Length
 
 #text_stack_sample$Specificity
-CSR<-text_stack_sample[,-1]
-save(CSR, file = "workspaces/CSR.RData")
+Specificity_Scores<-text_stack_sample[,-1]
+save(Specificity_Scores, file = "workspaces/Specificity_Scores.RData")
+write.csv(text_stack_sample[,c("file","Specificity")],"scripts/Specificity_file.csv")
+save.image("workspaces/Specificity_1431.RData")
 

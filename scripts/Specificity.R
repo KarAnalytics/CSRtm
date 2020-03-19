@@ -37,11 +37,16 @@ head(document_entity,4)
 
 ## the loop takes about 2 mins 10 sec for 30 files
 document<-NULL
-for (i in 1:nrow(text_stack_sample)){
+
+document[[458]] = 0
+# for (i in 1:nrow(text_stack_sample)){
+for (i in 459:nrow(text_stack_sample)){
   print(i)
+  try(
   if(text_stack_sample[i,1] != ""){
     document[[i]]<-spacy_parse(text_stack_sample[i,1])
   }
+  )
 }
 
 #warings()
@@ -53,7 +58,7 @@ for (i in 1:nrow(text_stack_sample)){
 document_entity<- NULL
 for (i in 1:length(document)){
   print(i)
-    document_entity[[i]]<- entity_extract(document[[i]], type = "all")
+    try( document_entity[[i]]<- entity_extract(document[[i]], type = "all") )
 }
 
 ################################### Add length
@@ -68,8 +73,8 @@ text_stack_sample$EntityCount <- lapply(document_entity, nrow)
 text_stack_sample$Specificity <- unlist(text_stack_sample$EntityCount) / text_stack_sample$Length
 
 #text_stack_sample$Specificity
-CSR<-text_stack_sample[,-1]
-save(CSR, file = "workspaces/CSR.RData")
+#CSR<-text_stack_sample[,-1]
+#save(CSR, file = "workspaces/CSR.RData")
 
 save.image("workspaces/Specificity_1431.RData")
 

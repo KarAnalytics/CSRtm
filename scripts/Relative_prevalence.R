@@ -5,7 +5,7 @@
 
 ## load package
 library(RColorBrewer)
-Sys.setenv("JAVA_HOME" = '/usr/bin/java') 
+Sys.setenv(JAVA_HOME = 'C:/Program Files/Java/jdk-14.0.1')
 library(rJava)
 library(openNLP)
 library(qdap)
@@ -44,4 +44,14 @@ text_stack_sample$RelaPre
 
 save.image("workspaces/RelPrevelance_1431.RData")
 
-#save(text_stack_sample, file = "workspaces/Relative_prevalece.RData")
+f
+save(NewScore, file = "workspaces/NewRP.csv")
+
+NewScore<- NULL
+NewScore$file<-text_stack_sample$file
+NewScore$OldScore<-text_stack_sample$RelaPre
+NewScore$NEW<-text_stack_sample$NewRPscore
+NewScore<-as.data.frame(NewScore)
+head(NewScore,100)
+mean(na.omit((NewScore$NEW-NewScore$OldScore)/NewScore$OldScore))
+

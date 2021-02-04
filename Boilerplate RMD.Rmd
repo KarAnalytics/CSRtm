@@ -1,0 +1,146 @@
+---
+title: "Boilerplate"
+author: "Jinhang Jiang"
+date: "5/16/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Calculation of Boilerplate
+
+
+
+```{r load text sample}
+load("workspaces/CSR_documents_30samples.RData")
+```
+
+## Tokenize all the sentence
+
+we removed all the numbers here
+
+```{r Tokenizer, message=FALSE}
+library(koRpus.lang.en)
+library(tokenizers)
+library(tm)
+
+t<-list(length=nrow(text_stack_sample))
+for(row in 1:nrow(text_stack_sample))
+{
+  print(row)
+  if (text_stack_sample[row,1] != "")
+  {
+    t[[row]] =unlist(tokenize_sentences(removeNumbers(text_stack_sample[row,1])))
+  }
+}
+```
+
+
+## Get the tetragrams into one list
+
+```{r tetragrams}
+ngram <- list(length=length(t))
+for(i in 1:length(t))
+{
+  print(i)
+  ngram[[i]] = list(length = length(t[[i]]))
+  for(j in 1:length(t[[i]]))
+  {
+    try(
+    if(t[[i]][[j]] != "")
+    {
+      ngram[[i]][[j]] = tokenize_ngrams(t[[i]][[j]],n=4)
+    }
+    )
+  }
+}
+
+
+list_tetragrams = list(length(nrow(text_stack_sample)))
+
+for(row in 1:nrow(text_stack_sample))
+{
+  temp  = unlist(ngram[row])
+  temp = as.data.frame(table(temp))
+  list_tetragrams[[row]] = temp$temp    
+}
+
+Fngram<- list(unlist(unlist(list_tetragrams)))
+```
+
+
+## Get the tetragrams with frequency between 30% and 75%
+```{r frequency}
+library(tidyverse)
+N_table<-as.data.frame(table(Fngram))
+
+N_table2 = N_table%>%
+  arrange(desc(Freq))%>%
+  mutate(prop=Freq/nrow(text_stack_sample)) %>% filter(prop>0.3 & prop<=0.75)
+
+N_table2
+```
+
+## Calculate Number of words and tetragrams in each sentences
+```{r flag tetragrams}
+##  NWoS stands for Number of Words of each Sentence
+
+for (i in 1:nrow(text_stack_sample)){
+  text_stack_sample$NWoS[[i]] <- lapply(t[[i]],function(x) str_count(x,'\\w+'))
+}
+
+
+## Num of tetragram in each sentence
+
+sen_list<- list()
+
+
+
+system.time(
+for (i in 1:length(t)){
+  print(i)
+  sent_tetragram_count_list = list()
+  for(sent in 1:length(t[[i]]))
+  {
+    temp = 0
+    for (j in 1:nrow(N_table2)){
+      
+      ngrams = na.omit(ngram[[i]][[sent]])
+      
+      if(isTRUE(any(unlist(map(ngrams,str_detect,as.character(N_table2[j,1]))))))
+      {
+        temp = temp + 1 
+      }
+      
+    }
+    sent_tetragram_count_list[[sent]] = temp
+  }
+  
+  sen_list[[i]] = sent_tetragram_count_list
+  
+}
+)
+```
+
+
+## Calculate Boilerplate
+```{r Boilerplate}
+library(stringr)
+## Get the length of each document
+text_stack_sample$Length<-str_count(text_stack_sample[,1], '\\w+')
+
+## Final Calculation
+for (i in 1:nrow(text_stack_sample)){
+  temp = 0
+  for (sent in 1:length(text_stack_sample$NWoS[[i]])){
+    if (sen_list[[i]][[sent]] != 0){
+      temp = temp+text_stack_sample$NWoS[[i]][[sent]]
+    }
+  }
+  text_stack_sample$BoilerPlate[i] = temp / text_stack_sample$Length[i] 
+}
+
+text_stack_sample$BoilerPlate
+```
